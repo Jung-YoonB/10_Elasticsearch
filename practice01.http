@@ -1,0 +1,86 @@
+### 인덱스 생성
+PUT movies
+{
+  "settings": { "number_of_shards": 1, "number_of_replicas": 0 },
+  "mappings": {
+    "properties": {
+      "title": { "type": "text" },
+      "director": { "type": "keyword" },
+      "e": { "type": "integer" },
+      "genre": { "type": "keyword" }
+    }
+  }
+}
+
+### 문서 생성
+POST movies/_doc/1
+{ "title": "영화1",
+  "director": "감독1",
+  "release_year": 2026, 
+  "genre": "코미디"
+}
+
+POST movies/_doc/2
+{ "title": "영화2",
+  "director": "감독1",
+  "release_year": 2024, 
+  "genre": "드라마"
+}
+
+POST movies/_doc/3
+{ "title": "영화3",
+  "director": "감독2",
+  "release_year": 2026, 
+  "genre": "애니메이션"
+}
+
+POST movies/_doc/4
+{ "title": "영화4",
+  "director": "감독3",
+  "release_year": 2026, 
+  "genre": "스릴러"
+}
+
+POST movies/_doc/5
+{ "title": "영화5",
+  "director": "감독1",
+  "release_year": 2018, 
+  "genre": "액션"
+}
+
+
+### 인덱스 조회
+GET movies/_search
+
+### 매핑 정보 조회
+GET movies/_mapping
+
+### match 검색
+GET movies/_search
+{ "query": { "match": { "release_year": 2026 } } }
+
+### term (일치) 검색
+GET movies/_search
+{ "query": { "term": { "release_year": 2026 } } }
+
+### 집계 검색 
+# 키워드 필드
+GET movies/_search
+{
+  "size": 0,
+  "aggs": { "by_category": { "terms": { "field": "director" } } }
+}
+
+# 텍스트 필드 (오류)
+GET movies/_search
+{
+  "size": 0,
+  "aggs": { "by_title": { "terms": { "field": "title" } } }
+}
+
+# Integer
+GET movies/_search
+{
+  "size": 0,
+  "aggs": { "by_release_year": { "terms": { "field": "release_year" } } }
+}
